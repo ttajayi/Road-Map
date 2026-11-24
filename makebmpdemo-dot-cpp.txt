@@ -1,0 +1,28 @@
+#include "makebmp.h"
+
+void square(image & I, int offset, int width, int c)
+{ int y0 = offset, y1 = I.height - offset - 1;
+  int x0 = offset, x1 = I.width - offset - 1;
+  for (int i = 0; i < width; i += 1)
+  { for (int j = x0; j <= x1; j += 1)
+    { I.at(j, y0) = c;
+      I.at(j, y1) = c; }
+    for (int j = y0; j <= y1; j += 1)
+    { I.at(x0, j) = c;
+      I.at(x1, j) = c; }
+    y0 += 1;
+    y1 -= 1;
+    x0 += 1;
+    x1 -= 1; } }
+
+int main()
+{ image I(100, 100);
+  square(I, 0, 4, colour(255, 0, 0));
+  square(I, 4, 4, colour(0, 255, 0));
+  square(I, 8, 4, colour(0, 0, 255));
+  square(I, 32, 4, colour(255, 127, 0));
+  square(I, 46, 3, colour(0, 0, 0));
+  I.write("x.bmp"); }
+
+
+ 
