@@ -1,0 +1,135 @@
+
+different forms of the fstream constructors
+
+    ifstream fa(filename);
+    ifstream fb(filename, flags);
+    ofstream fc(filename);
+    ofstream fd(filename, flags);
+    fstream fe(filename);
+    fstream ff(filename, flags);
+
+flags is any combination (using the bitwise or | operator) of
+    ios::in     - open for reading
+    ios::out    - open for writing
+    ios::binary - when it is not a text file - NEEDED with windows
+    ios::trunc  - erase content of file if it already exists
+    ios::app    - all output is appended to the end of the file
+    ios::ate    - output stream is initially positioned at end of file
+
+If you do not provide any flags along with the filename, the defaults are
+    for ifstream - ios::in
+    for ofstream - ios::out | ios::trunc
+    for fstream  - ios::in | ios::out
+
+If you do provide flags, of course the default is ignored. If you use
+ofstream without specifying ios::trunc, the original contents of the
+file (if there are any) are not erased.
+
+Alternatively
+
+    ifstream fg;
+    ofstream fh;
+    fstream fi;
+followed later by
+    fg.open(filename, flags);
+or
+    fg.open(filename);
+
+Checking
+
+    f.is_open()   or   f.fail()
+
+returns a bool, tells you if the fstream is successfully open.
+
+fg >> x >> y >> z;     exactly as for cin, spaces tabes newlines etc almost ignored
+                       but count as separators
+fh << x << y << z;     excatly as for cout
+
+Checking for end of file, use
+
+    if (fa.fail())   or   if (fa.eof())
+
+AFTER the attempted operation.
+
+To read a whole line into a string
+    string s;
+    getline(fg, s);
+This does not necessarily read a whole line. If part of the current line has already
+been read, this function will only read the rest of the line. A line is considered
+to be any sequence of characters up to the terminating newline, '\n', ASCII 10, or
+end of file. The terminator is thrown away, and does not appear in the string.
+
+A third parameter is permitted, just a single char, to specify soem terminator other
+than \n. It reads and reads and reads until that character is encountered, and again
+that terminator is not added to the string.
+
+To read the next single character
+
+    c = fa.get();
+
+this will give you the next character no matter what it is, it does not
+skip over spaces and newlines. However, end-of-file is not a character,
+you need to detect that condition by other means.
+
+When you're unsure:
+
+    int c = inf.peek();       // tells you the next character
+                              // without advancing the input position.
+
+    inf.unget();              // "un-reads" the one last character read -
+                              // puts the input position back by one
+
+Don't forget fa.close() at the end.
+
+To read non-text data:
+
+    fa.read(pointer, number);
+
+pointer is a pointer to any variable, array, or struct. The bytes read from
+the file will be written directly where that pointer points. Remember to
+typecast to (char *).
+
+number is the number of bytes to read.
+
+
+After using read, it is a good idea to use gcount:
+
+    int n = fa.gcount();
+
+n is the number of bytes that were successfully read by the last read() done. 
+It will be less than the number requested if the end of the file is reached.
+
+
+To write non-text data:
+
+    fc.write(pointer, number);
+
+
+Don't forget to close files when finished with them.
+
+
+Current position in the file:
+
+    int p = fa.tellg();       // for input streams
+    int q = fc.tellp();       // for output streams
+
+these return the current position in the file, the value is the number of
+bytes from the beginning. If you have only just opened the file, the position
+will be zero.
+
+    fa.seekg(p, relative);     // input
+    fc.seekp(p, relative);     // output
+
+these are used to change the position in the file, so that earlier data can
+be re-read (or overwritten) or so that you can skip over data that you do
+not need to read.
+
+"relative" must be one of the three constants ios::beg, ios::cur, ios::end.
+
+ios::beg (beginning) - reposition to exactly p bytes from the beginning of the file
+ios::cur (current) - reposition p bytes from the current position, so a positive
+                     p means p bytes will be skipped, p can be negative.
+ios::end - reposition to p bytes beyond the end of the file, p=0 is the most
+           common: go directly to the end of the file, but p may be negative.
+
+
