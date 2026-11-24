@@ -424,3 +424,22 @@ FodyWeavers.xsd
 
 # Official VS Code C# Dev Kit Extension exclusion
 #*.lscache
+
+# Compiled executables
+*.exe
+*.out
+*.o
+
+# Temporary generated map
+map.bmp
+
+# Temporary and backup files
+*.bak
+*.temp
+
+# Windows system files
+Thumbs.db
+Desktop.ini
+
+# Extracted elevation data
+*.dat
